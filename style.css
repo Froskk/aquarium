@@ -1,10 +1,18 @@
 [data-theme="default"] {
   --fg: hsl(0, 0%, 25%);
-  --border: hsl(0, 0%, 75%);
+  --border: hsl(0, 0%, 55%);
 
   --bg: hsl(0, 0%, 95%);
   --button-bg: hsl(0, 0%, 99%);
   --input-bg: hsl(0, 0%, 90%);
+
+  --on: #1da1f288;
+  --off: #b4f2ab88;
+  --marker: #ffc600;
+
+  --cell-border: hsl(0, 0%, 55%);
+  --label-border: hsl(0, 0%, 75%);
+  --shape-border: hsl(0, 0%, 25%);
 }
 
 [data-theme="dark"] {
@@ -14,11 +22,22 @@
   --bg: hsl(0, 0%, 20%);
   --button-bg: hsl(0, 0%, 25%);
   --input-bg: hsl(0, 0%, 15%);
+
+  /* --on: #2b7e82dd;
+  --off: #b4f2abdd; */
+  --on: #1da1f288;
+  --off: #b4f2ab88;
+  --marker: #ffc600;
+
+  --cell-border: #fff;
+  --label-border: #ffffff33;
+  --shape-border: #fff;
 }
 
 [data-theme] {
   color: var(--fg);
   background-color: var(--bg);
+  transition: color 0.3s ease-in, background-color 0.3s ease-in;
 }
 
 body {
@@ -34,14 +53,11 @@ body {
   flex-direction: column;
 }
 
-header {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  padding: 0.3em;
+header > * {
+  padding: 0.1em;
 }
 
-header h1 {
+.title {
   color: #00d4ff;
   background: linear-gradient(68deg, #fff300, #00d4ff);
   background-clip: inherit;
@@ -54,28 +70,91 @@ header h1 {
   animation: HeaderFlow 20s ease infinite;
 }
 
-header > ul {
+header {
   display: flex;
-  align-items: center;
+  justify-content: space-around;
+  flex-wrap: wrap;
 }
 
-header > ul > li {
-  padding: 0.4em 0.75em;
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-size: 1.2em;
+}
+
+.wrapper > ul {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.theme,
+.wrapper > ul > li {
+  margin: 0 0.4em;
+}
+
+.toggle,
+.wrapper > ul > li:not(.timer) {
+  cursor: pointer;
 }
 
 header svg {
-  width: 2em;
+  width: 1.5em;
   fill: var(--fg);
+  transition: fill 0.3s ease-in;
 }
 
 .timer {
-  width: 6em;
+  width: 3.3em;
   text-align: right;
+  font-feature-settings: “tnum”;
+  font-variant-numeric: tabular-nums;
+}
+
+.toggle-wrapper {
+  width: 75px;
+  height: 34px;
+  position: relative;
+  margin: 0.4em;
+  background-color: var(--input-bg);
+  transition: background-color 0.3s ease-in;
+  border-radius: 999em;
+}
+
+.toggle-wrapper input {
+  position: absolute;
+  left: -99em;
+}
+
+.toggle {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.toggle-icon {
+  position: absolute;
+  display: block;
+  top: 5px;
+  left: 5px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: transparent;
+  box-shadow: inset -3px 3px 0 3px #bab8ab;
+  transform: translate3d(41px, 0, 0) rotate(180deg);
+  transition: all 200ms cubic-bezier(0.445, 0.05, 0.55, 0.95);
+}
+
+input:checked + .toggle > .toggle-icon {
+  background-color: #f3d076;
+  transform: translate3d(0, 0, 0);
+  border-radius: 999em;
+  box-shadow: inset -8px 8px 0 15px transparent;
 }
 
 .game {
-  width: 100%;
-  height: 100%;
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -103,15 +182,18 @@ header svg {
 
 .tool {
   position: relative;
+  margin: 0.5em;
 }
 
-.tool > a {
+.tool > div {
   position: absolute;
   padding: 1em;
+  cursor: pointer;
 }
 
 .tool svg {
-  fill: #fff;
+  fill: var(--fg);
+  transition: fill 0.3s ease-in;
 }
 
 .tool svg .tool-list-container {
@@ -130,12 +212,9 @@ header svg {
   display: flex;
 }
 
-.tool + .tool {
-  margin-left: 0.8em;
-}
-
 .tool-list-container > ul > li {
-  background: var(--button-bg);
+  background-color: var(--button-bg);
+  transition: background-color 0.3s ease-in;
   border-radius: 8px;
   width: 10vmin;
   height: 10vmin;
@@ -150,18 +229,18 @@ header svg {
   align-items: center;
   justify-content: center;
   text-align: center;
-  font-size: 4em;
-  font-size: 9vmin;
-  width: 12vmin;
-  height: 12vmin;
+  font-size: 3em;
+  font-size: 4.5vmin;
+  width: 6vmin;
+  height: 6vmin;
 }
 
-.on {
-  background: #2b7e82dd;
+[data-fill="water"] {
+  background-color: var(--on);
 }
 
-.cell:not(.on) {
-  background: #b4f2abdd;
+[data-fill="air"] {
+  background: var(--off);
 }
 
 .cell {
@@ -169,7 +248,9 @@ header svg {
 }
 
 .cell::before {
-  border: 1px solid #ffffff;
+  border: 1px solid;
+  border-color: var(--cell-border);
+  transition: border-color 0.3s ease-in;
   opacity: 0.2;
   content: "";
   width: 100%;
@@ -177,23 +258,71 @@ header svg {
   position: absolute;
 }
 
+.h.cell::after,
+.v.cell::after,
+.vh.cell::after,
+.top-row.cell::after,
+.bottom-row.cell::after,
+.left-column.cell::after,
+.right-column.cell::after {
+  content: "";
+  position: absolute;
+  width: calc(100% + 2px);
+  height: calc(100% + 2px);
+  z-index: 1;
+}
+
+.h.cell::after {
+  border-bottom: 2px solid var(--shape-border);
+}
+
+.v.cell::after {
+  border-right: 2px solid var(--shape-border);
+}
+
+.vh.cell::after {
+  border-right: 2px solid var(--shape-border);
+  border-bottom: 2px solid var(--shape-border);
+}
+
+.top-row.cell::after {
+  border-top: 2px solid var(--shape-border);
+}
+
+.bottom-row.cell::after {
+  border-bottom: 2px solid var(--shape-border);
+}
+
+.left-column.cell::after {
+  border-left: 2px solid var(--shape-border);
+}
+
+.right-column.cell::after {
+  border-right: 2px solid var(--shape-border);
+}
+
 /* TODO: Add transitions */
 /* FIXME: Is this a real use-case for !important? */
 /* border-left and -top are unset by sibling selectors
    to avoid double-borders */
 .cell:hover::before {
-  border: 2px dashed #fff !important;
+  border: 2px dashed !important;
+  color: var(--marker);
+  background-color: #00000011;
+  transition: none;
+  z-index: 2;
+
   opacity: 1;
 }
 
 .cell-label {
   cursor: pointer;
-  border: 1px dashed #ffffff33;
+  border: 1px dashed;
+  border-color: var(--label-border);
+  transition: border-color 0.3s ease-in, opacity 0.3s ease-in;
 }
 
-/* TODO: Make a toggle for inactive state */
-.cell-label:active {
-  border: 1px dashed #ffffff;
+.cell-label.not-active > span {
   opacity: 0.2;
 }
 
@@ -254,6 +383,16 @@ header svg {
   }
 }
 
+@media (min-width: 560px) {
+  header > * {
+    padding: 0.7em;
+  }
+
+  .wrapper > ul > li {
+    margin: 0.4em;
+  }
+}
+
 @media (min-width: 400px) and (orientation: landscape) {
   .game {
     flex-direction: row;
@@ -261,11 +400,6 @@ header svg {
 
   .tool-list-container > ul {
     flex-direction: column;
-  }
-
-  .tool + .tool {
-    margin-left: 0;
-    margin-top: 0.8em;
   }
 
   .controls {

@@ -1,7 +1,16 @@
 const toggleState = (element, flag) => {
-  // const currentState = element.classList.contains(flag);
-  const negation = flag.slice(0, 3) === "not-" ? flag.slice(3) : "not-" + flag;
+  const hasFlag = element.classList.contains(flag);
+  const hasNotFlag = element.classList.contains("not-" + flag);
 
-  element.classList.remove(flag);
-  element.classList.add(negation(flag));
+  if (hasFlag) {
+    element.classList.remove(flag);
+    element.classList.add("not-" + flag);
+  }
+
+  if (hasNotFlag) {
+    element.classList.remove("not-" + flag);
+    element.classList.add(flag);
+  } else {
+    element.classList.add("not-" + flag);
+  }
 };
