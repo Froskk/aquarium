@@ -7,7 +7,7 @@
   --input-bg: hsl(0, 0%, 90%);
 
   --on: #1da1f288;
-  --off: #b4f2ab88;
+  --off: #b4f2abbb;
   --marker: #ffc600;
 
   --cell-border: hsl(0, 0%, 55%);
@@ -124,7 +124,7 @@ header svg {
 
 .toggle-wrapper input {
   position: absolute;
-  left: -99em;
+  left: -999em;
 }
 
 .toggle {
@@ -191,9 +191,21 @@ input:checked + .toggle > .toggle-icon {
   cursor: pointer;
 }
 
-.tool svg {
+.selector.active {
   fill: var(--fg);
-  transition: fill 0.3s ease-in;
+}
+
+.tool:not(.active) {
+  fill: var(--fg);
+  transition: all 0.3s ease-in;
+}
+
+.active[data-paint="water"] {
+  fill: var(--on);
+}
+
+.active[data-paint="air"] {
+  fill: var(--off);
 }
 
 .tool svg .tool-list-container {
@@ -311,6 +323,9 @@ input:checked + .toggle > .toggle-icon {
   background-color: #00000011;
   transition: none;
   z-index: 2;
+  width: calc(100% - 6px);
+  height: calc(100% - 6px);
+  border-radius: 3px;
 
   opacity: 1;
 }
